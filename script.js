@@ -7,8 +7,23 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeWebsite();
 });
 
+const CATALOG_STORAGE_KEY = 'uniaoProductCatalogV1';
+const CATEGORY_LABELS = {
+    all: 'All Products',
+    sisal: 'Sisal Fiber Products',
+    coffee: 'Coffee & Tea',
+    grains: 'Grains',
+    fruits: 'Fruits',
+    nuts: 'Nuts',
+    spices: 'Spices & Herbs',
+    vegetables: 'Vegetables',
+    oils: 'Essential Oils',
+    other: 'Other Products'
+};
+
 // Main initialization function
 function initializeWebsite() {
+    initCatalogSync();
     hideLoadingScreen();
     initNavigation();
     initThemeToggle();
@@ -20,6 +35,169 @@ function initializeWebsite() {
     initParticles();
     initTestimonials();
     initScrollAnimations();
+}
+
+function normalizeCategory(value) {
+    const cleaned = String(value || '')
+        .toLowerCase()
+        .trim()
+        .replace(/\s*&\s*/g, '-')
+        .replace(/\s+/g, '-');
+
+    if (!cleaned) return 'other';
+
+    if (CATEGORY_LABELS[cleaned]) return cleaned;
+    if (cleaned.includes('spice') || cleaned.includes('herb')) return 'spices';
+    if (cleaned.includes('oil')) return 'oils';
+    if (cleaned.includes('grain') || cleaned.includes('bean')) return 'grains';
+    if (cleaned.includes('fruit')) return 'fruits';
+    if (cleaned.includes('nut')) return 'nuts';
+    if (cleaned.includes('sisal')) return 'sisal';
+    if (cleaned.includes('coffee') || cleaned.includes('tea')) return 'coffee';
+    if (cleaned.includes('vegetable')) return 'vegetables';
+
+    return 'other';
+}
+
+function getCategoryLabel(category) {
+    return CATEGORY_LABELS[normalizeCategory(category)] || 'Other Products';
+}
+
+function escapeHTML(text) {
+    return String(text || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function escapeAttribute(text) {
+    return escapeHTML(text).replace(/`/g, '&#96;');
+}
+
+function extractCatalogFromProductsDOM() {
+    const cards = document.querySelectorAll('.product-card');
+    if (cards.length === 0) return [];
+
+    const catalog = [];
+
+    cards.forEach((card, index) => {
+        const title = card.querySelector('.product-title')?.textContent?.trim() || `Product ${index + 1}`;
+        const description = card.querySelector('.product-description')?.textContent?.trim() || '';
+        const image = card.querySelector('img')?.getAttribute('src') || '';
+        const alt = card.querySelector('img')?.getAttribute('alt') || title;
+        const category = normalizeCategory(card.getAttribute('data-category'));
+
+        catalog.push({
+            id: `prod-${index + 1}`,
+            name: title,
+            description,
+            image,
+            imageAlt: alt,
+            category,
+            price: ''
+        });
+    });
+
+    return catalog;
+}
+
+function getStoredCatalog() {
+    try {
+        const raw = localStorage.getItem(CATALOG_STORAGE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed) || parsed.length === 0) return null;
+        return parsed;
+    } catch (error) {
+        return null;
+    }
+}
+
+function setStoredCatalog(catalog) {
+    localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify(catalog));
+}
+
+function renderProductsGridFromCatalog(catalog) {
+    const productsGrid = document.getElementById('productsGrid');
+    if (!productsGrid || !Array.isArray(catalog) || catalog.length === 0) return;
+
+    const cardsMarkup = catalog.map(product => {
+        const safeName = escapeHTML(product.name);
+        const safeDescription = escapeHTML(product.description || '');
+        const safeImage = escapeAttribute(product.image || '');
+        const safeAlt = escapeAttribute(product.imageAlt || product.name || 'Product image');
+        const safeCategory = escapeAttribute(normalizeCategory(product.category));
+        const safePrice = escapeHTML(product.price || '');
+        const quoteName = (product.name || '').replace(/'/g, "\\'");
+        const priceMarkup = safePrice ? `<p class="product-price">${safePrice}</p>` : '';
+
+        return `<div class="product-card" data-category="${safeCategory}">`
+            + `<div class="product-image"><img src="${safeImage}" alt="${safeAlt}" loading="lazy"></div>`
+            + `<div class="product-info">`
+            + `<h3 class="product-title">${safeName}</h3>`
+            + `<p class="product-description">${safeDescription}</p>`
+            + priceMarkup
+            + `<button class="btn btn-outline btn-small" onclick="getQuote('${quoteName}')"><i class="fas fa-paper-plane"></i> Get Quote</button>`
+            + `</div></div>`;
+    }).join('');
+
+    productsGrid.innerHTML = cardsMarkup;
+}
+
+function syncQuoteOptionsFromCatalog(catalog) {
+    const productSelect = document.getElementById('product');
+    if (!productSelect || !Array.isArray(catalog) || catalog.length === 0) return;
+
+    const grouped = {};
+    catalog.forEach(product => {
+        const category = normalizeCategory(product.category);
+        if (!grouped[category]) grouped[category] = [];
+        grouped[category].push(product);
+    });
+
+    const orderedCategories = Object.keys(CATEGORY_LABELS).filter(key => key !== 'all' && grouped[key]);
+
+    let markup = '<option value="">Select a product</option>';
+    orderedCategories.forEach(category => {
+        const label = getCategoryLabel(category);
+        markup += `<optgroup label="${escapeAttribute(label)}">`;
+        grouped[category]
+            .slice()
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .forEach(product => {
+                markup += `<option value="${escapeAttribute(product.name)}">${escapeHTML(product.name)}</option>`;
+            });
+        markup += '</optgroup>';
+    });
+
+    productSelect.innerHTML = markup;
+}
+
+function initCatalogSync() {
+    const hasProductsGrid = Boolean(document.getElementById('productsGrid'));
+    const hasQuoteSelect = Boolean(document.getElementById('product'));
+    if (!hasProductsGrid && !hasQuoteSelect) return;
+
+    let catalog = getStoredCatalog();
+
+    if (!catalog && hasProductsGrid) {
+        catalog = extractCatalogFromProductsDOM();
+        if (catalog.length > 0) {
+            setStoredCatalog(catalog);
+        }
+    }
+
+    if (!catalog || catalog.length === 0) return;
+
+    if (hasProductsGrid) {
+        renderProductsGridFromCatalog(catalog);
+    }
+
+    if (hasQuoteSelect) {
+        syncQuoteOptionsFromCatalog(catalog);
+    }
 }
 
 // ===================================

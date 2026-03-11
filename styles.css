@@ -758,6 +758,13 @@ section {
     margin-bottom: 20px;
 }
 
+.product-price {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 18px;
+}
+
 /* Why Us Section */
 .why-us-section {
     background: var(--gradient-primary);
