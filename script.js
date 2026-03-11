@@ -207,11 +207,9 @@ function hideLoadingScreen() {
     const loadingScreen = document.getElementById('loadingScreen');
     if (!loadingScreen) return;
 
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            loadingScreen.classList.add('hidden');
-        }, 500);
-    });
+    setTimeout(() => {
+        loadingScreen.classList.add('hidden');
+    }, 150);
 }
 
 // ===================================
