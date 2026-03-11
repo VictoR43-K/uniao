@@ -292,7 +292,6 @@ function handleQuoteSubmit(e) {
     // In production, you would send data to server:
     // fetch('/api/quote', { method: 'POST', body: JSON.stringify(data) })
 }
-}
 
 function handleNewsletterSubmit(e) {
     e.preventDefault();
