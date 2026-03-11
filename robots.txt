@@ -1,0 +1,19 @@
+# Robots.txt for Uniao Group Limited
+# Controls search engine crawling
+
+User-agent: *
+Allow: /
+Allow: /*.html$
+Allow: /styles.css$
+Allow: /script.js$
+
+# Disallow directories
+Disallow: /admin/
+Disallow: /private/
+Disallow: /temp/
+
+# Crawl delay
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://www.uniaogroup.co/sitemap.xml

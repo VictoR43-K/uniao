@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Request a quote from Uniao Group Limited for sisal fiber and agricultural products.">
+    <title>Get Quote | Uniao Group Limited</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"><i class="fas fa-moon"></i></button>
+    <div class="loading-screen" id="loadingScreen"><div class="loader"></div></div>
+
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="logo"><i class="fas fa-leaf"></i><span>UNIAO GROUP</span></div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="products.html" class="nav-link">Products</a></li>
+                <li><a href="about.html#why-us" class="nav-link">Why Us</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+                <li><a href="quote.html" class="btn btn-primary">Get Quote</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">Request a <span class="gradient-text">Quote</span></h1>
+                <p class="hero-subtitle">Share your requirements and our team will respond within 24 hours.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="quote-section" id="quote">
+        <div class="container">
+            <div class="quote-wrapper">
+                <div class="quote-info">
+                    <h2>Tell Us What You Need</h2>
+                    <p>We support both short-term and long-term supply contracts with quality assurance and competitive pricing.</p>
+                    <div class="quote-benefits">
+                        <div class="benefit-item"><i class="fas fa-check-circle"></i><span>Fast Response Time</span></div>
+                        <div class="benefit-item"><i class="fas fa-check-circle"></i><span>Competitive Pricing</span></div>
+                        <div class="benefit-item"><i class="fas fa-check-circle"></i><span>Flexible Terms</span></div>
+                        <div class="benefit-item"><i class="fas fa-check-circle"></i><span>Quality Guarantee</span></div>
+                    </div>
+                </div>
+
+                <form class="quote-form" id="quoteForm">
+                    <div class="form-row">
+                        <div class="form-group"><label for="name">Full Name *</label><input type="text" id="name" name="name" required></div>
+                        <div class="form-group"><label for="email">Email Address *</label><input type="email" id="email" name="email" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="phone">Phone Number *</label><input type="tel" id="phone" name="phone" required></div>
+                        <div class="form-group"><label for="company">Company Name</label><input type="text" id="company" name="company"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="product">Product of Interest *</label>
+                        <select id="product" name="product" required>
+                            <option value="">Select a product</option>
+                            <optgroup label="Sisal Fiber Products">
+                                <option value="UG Grade Sisal Fiber">UG Grade Sisal Fiber</option>
+                                <option value="SSUG Grade Sisal Fiber">SSUG Grade Sisal Fiber</option>
+                                <option value="Polished Sisal Fiber">Polished Sisal Fiber</option>
+                                <option value="Sisal Yarn">Sisal Yarn</option>
+                                <option value="Sisal Rope">Sisal Rope</option>
+                            </optgroup>
+                            <optgroup label="Coffee & Tea">
+                                <option value="Arabica Coffee">Arabica Coffee</option>
+                                <option value="Robusta Coffee">Robusta Coffee</option>
+                                <option value="Kenya Tea">Kenya Tea</option>
+                            </optgroup>
+                            <optgroup label="Fruits">
+                                <option value="Mango">Mango</option>
+                                <option value="Pineapple">Pineapple</option>
+                                <option value="Papaya">Papaya</option>
+                                <option value="Banana">Banana</option>
+                                <option value="Guava">Guava</option>
+                                <option value="Passion Fruit">Passion Fruit</option>
+                                <option value="Avocado">Avocado</option>
+                                <option value="Coconut">Coconut</option>
+                                <option value="Orange">Orange</option>
+                                <option value="Lemon">Lemon</option>
+                                <option value="Lime">Lime</option>
+                                <option value="Grapefruit">Grapefruit</option>
+                                <option value="Tangerine">Tangerine</option>
+                                <option value="Apple">Apple</option>
+                                <option value="Pear">Pear</option>
+                                <option value="Peach">Peach</option>
+                                <option value="Plum">Plum</option>
+                                <option value="Cherry">Cherry</option>
+                                <option value="Strawberry">Strawberry</option>
+                                <option value="Blueberry">Blueberry</option>
+                                <option value="Raspberry">Raspberry</option>
+                                <option value="Blackberry">Blackberry</option>
+                                <option value="Grape">Grape</option>
+                                <option value="Raisin">Raisin</option>
+                                <option value="Date">Date</option>
+                                <option value="Prune">Prune</option>
+                                <option value="Dried Fig">Dried Fig</option>
+                                <option value="Dried Apricot">Dried Apricot</option>
+                                <option value="Dried Mango">Dried Mango</option>
+                                <option value="Dried Pineapple">Dried Pineapple</option>
+                                <option value="Dried Banana">Dried Banana</option>
+                                <option value="Cranberry">Cranberry</option>
+                            </optgroup>
+                            <optgroup label="Nuts">
+                                <option value="Cashew">Cashew</option>
+                                <option value="Almond">Almond</option>
+                                <option value="Walnut">Walnut</option>
+                                <option value="Hazelnut">Hazelnut</option>
+                                <option value="Pistachio">Pistachio</option>
+                                <option value="Macadamia">Macadamia</option>
+                                <option value="Brazil Nut">Brazil Nut</option>
+                                <option value="Pecan">Pecan</option>
+                                <option value="Chestnut">Chestnut</option>
+                                <option value="Beech Nut">Beech Nut</option>
+                                <option value="Hickory Nut">Hickory Nut</option>
+                                <option value="Peanut">Peanut</option>
+                                <option value="Tiger Nut">Tiger Nut</option>
+                                <option value="Pine Nut">Pine Nut</option>
+                                <option value="Kola Nut">Kola Nut</option>
+                                <option value="Candlenut">Candlenut</option>
+                                <option value="Areca Nut">Areca Nut</option>
+                                <option value="Ginkgo Nut">Ginkgo Nut</option>
+                                <option value="Acorn">Acorn</option>
+                                <option value="Coconut">Coconut</option>
+                            </optgroup>
+                            <optgroup label="Grains">
+                                <option value="Rice">Rice</option>
+                                <option value="Wheat">Wheat</option>
+                                <option value="Maize">Maize</option>
+                                <option value="Barley">Barley</option>
+                                <option value="Sorghum">Sorghum</option>
+                                <option value="Millet">Millet</option>
+                                <option value="Oats">Oats</option>
+                                <option value="Rye">Rye</option>
+                                <option value="Quinoa">Quinoa</option>
+                                <option value="Lentil">Lentil</option>
+                                <option value="Chickpea">Chickpea</option>
+                                <option value="Pea">Pea</option>
+                            </optgroup>
+                            <optgroup label="Spices & Herbs">
+                                <option value="Black Pepper">Black Pepper</option>
+                                <option value="Clove">Clove</option>
+                                <option value="Cinnamon">Cinnamon</option>
+                                <option value="Cardamom">Cardamom</option>
+                                <option value="Nutmeg">Nutmeg</option>
+                                <option value="Star Anise">Star Anise</option>
+                                <option value="Cumin">Cumin</option>
+                                <option value="Coriander">Coriander</option>
+                                <option value="Mustard Seed">Mustard Seed</option>
+                                <option value="Fenugreek">Fenugreek</option>
+                                <option value="Turmeric">Turmeric</option>
+                                <option value="Paprika">Paprika</option>
+                                <option value="Ginger">Ginger</option>
+                                <option value="Garlic Powder">Garlic Powder</option>
+                                <option value="Chili Powder">Chili Powder</option>
+                                <option value="Cayenne Pepper">Cayenne Pepper</option>
+                                <option value="Chili Pepper">Chili Pepper</option>
+                                <option value="Bay Leaf">Bay Leaf</option>
+                                <option value="Rosemary">Rosemary</option>
+                                <option value="Thyme">Thyme</option>
+                                <option value="Oregano">Oregano</option>
+                                <option value="Basil">Basil</option>
+                                <option value="Parsley">Parsley</option>
+                                <option value="Mint">Mint</option>
+                                <option value="Sage">Sage</option>
+                                <option value="Dill">Dill</option>
+                                <option value="Chives">Chives</option>
+                                <option value="Lemongrass">Lemongrass</option>
+                                <option value="Aloe Vera">Aloe Vera</option>
+                                <option value="Lavender">Lavender</option>
+                                <option value="Chamomile">Chamomile</option>
+                                <option value="Fennel">Fennel</option>
+                                <option value="Tarragon">Tarragon</option>
+                                <option value="Marjoram">Marjoram</option>
+                            </optgroup>
+                            <optgroup label="Vegetables">
+                                <option value="Carrot">Carrot</option>
+                                <option value="Beetroot">Beetroot</option>
+                                <option value="Radish">Radish</option>
+                                <option value="Turnip">Turnip</option>
+                                <option value="Sweet Potato">Sweet Potato</option>
+                                <option value="Onion">Onion</option>
+                                <option value="Garlic">Garlic</option>
+                                <option value="Leek">Leek</option>
+                                <option value="Celery">Celery</option>
+                                <option value="Cassava">Cassava</option>
+                                <option value="Yam">Yam</option>
+                                <option value="Parsnip">Parsnip</option>
+                                <option value="Taro">Taro</option>
+                                <option value="Arrowroot">Arrowroot</option>
+                                <option value="Ginger">Ginger</option>
+                                <option value="Turmeric">Turmeric</option>
+                                <option value="Jerusalem Artichoke">Jerusalem Artichoke</option>
+                                <option value="Celeriac">Celeriac</option>
+                                <option value="Daikon">Daikon</option>
+                            </optgroup>
+                            <optgroup label="Essential Oils">
+                                <option value="Sunflower Oil">Sunflower Oil</option>
+                                <option value="Olive Oil">Olive Oil</option>
+                                <option value="Palm Oil">Palm Oil</option>
+                                <option value="Canola Oil">Canola Oil</option>
+                                <option value="Soybean Oil">Soybean Oil</option>
+                                <option value="Coconut Oil">Coconut Oil</option>
+                                <option value="Groundnut Oil">Groundnut Oil</option>
+                                <option value="Sesame Oil">Sesame Oil</option>
+                                <option value="Corn Oil">Corn Oil</option>
+                                <option value="Avocado Oil">Avocado Oil</option>
+                                <option value="Mustard Oil">Mustard Oil</option>
+                            </optgroup>
+                            <optgroup label="Other Products">
+                                <option value="Cow Hides/Skin">Cow Hides/Skin</option>
+                                <option value="Urea Fertilizer">Urea 46% N Fertilizer</option>
+                                <option value="Other">Other</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group"><label for="message">Additional Details *</label><textarea id="message" name="message" rows="4" required placeholder="Tell us quantity, specifications, destination, and timeline."></textarea></div>
+                    <button type="submit" class="btn btn-primary btn-large"><span>Submit Request</span><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col"><div class="footer-logo"><i class="fas fa-leaf"></i><span>UNIAO GROUP</span></div><p>Premium agricultural products and sisal fiber from Kenya.</p></div>
+                <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="index.html">Home</a></li><li><a href="about.html">About Us</a></li><li><a href="products.html">Products</a></li><li><a href="quote.html">Get a Quote</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+                <div class="footer-col"><h4>Our Products</h4><ul><li><a href="products.html">Sisal Fiber</a></li><li><a href="products.html">Spices & Herbs</a></li><li><a href="products.html">Grains</a></li><li><a href="products.html">Fruits</a></li><li><a href="products.html">Nuts</a></li><li><a href="products.html">View All Products</a></li></ul></div>
+                <div class="footer-col"><h4>Need Help?</h4><p><a href="mailto:info@uniaogroup.co">info@uniaogroup.co</a></p><p><a href="tel:+254732798029">+254 732 798029</a></p></div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Uniao Group Limited. All Rights Reserved.</p>
+                <div class="social-icons">
+                    <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter" title="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></button>
+    <a href="https://web.whatsapp.com/send?phone=254732798029&text=Hello, I'm interested in your products" class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+    <script src="script.js"></script>
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
+</body>
+</html>
