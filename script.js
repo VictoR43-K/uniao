@@ -184,35 +184,62 @@ function initProductFilters() {
     const filterButtons = document.querySelectorAll('.filter-btn');
     const productCards = document.querySelectorAll('.product-card');
 
+    const applyFilter = (filter) => {
+        const targetFilter = (filter || 'all').toLowerCase();
+        const targetButton = Array.from(filterButtons).find(
+            btn => btn.getAttribute('data-filter') === targetFilter
+        );
+
+        if (!targetButton) {
+            return;
+        }
+
+        // Update active button
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        targetButton.classList.add('active');
+
+        // Filter products with animation
+        productCards.forEach((card, index) => {
+            const category = card.getAttribute('data-category');
+
+            if (targetFilter === 'all' || category === targetFilter) {
+                setTimeout(() => {
+                    card.style.display = 'block';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 50);
+            } else {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.display = 'none';
+                }, 300);
+            }
+        });
+    };
+
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
             const filter = button.getAttribute('data-filter');
 
-            // Update active button
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
+            applyFilter(filter);
 
-            // Filter products with animation
-            productCards.forEach((card, index) => {
-                const category = card.getAttribute('data-category');
-
-                if (filter === 'all' || category === filter) {
-                    setTimeout(() => {
-                        card.style.display = 'block';
-                        setTimeout(() => {
-                            card.style.opacity = '1';
-                            card.style.transform = 'translateY(0)';
-                        }, 50);
-                    }, index * 50);
-                } else {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(20px)';
-                    setTimeout(() => {
-                        card.style.display = 'none';
-                    }, 300);
-                }
-            });
+            if (window.location.hash !== `#${filter}`) {
+                history.replaceState(null, '', `#${filter}`);
+            }
         });
+    });
+
+    const hashFilter = window.location.hash.replace('#', '').toLowerCase();
+    if (hashFilter) {
+        applyFilter(hashFilter);
+    }
+
+    window.addEventListener('hashchange', () => {
+        const updatedHashFilter = window.location.hash.replace('#', '').toLowerCase();
+        applyFilter(updatedHashFilter || 'all');
     });
 }
 
