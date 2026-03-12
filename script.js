@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const CATALOG_STORAGE_KEY = 'uniaoProductCatalogV1';
-const TAWK_PROPERTY_ID = '';
+const TAWK_PROPERTY_ID = '69b281889dd4d71c370f2a92';
 const TAWK_WIDGET_ID = 'default';
 const PRODUCT_IMAGE_MIGRATIONS = {
     'UG Grade Sisal Fiber': 'images/sisal%20fiber.webp',
