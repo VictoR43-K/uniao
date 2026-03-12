@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const CATALOG_STORAGE_KEY = 'uniaoProductCatalogV1';
+const TAWK_PROPERTY_ID = '';
+const TAWK_WIDGET_ID = 'default';
 const PRODUCT_IMAGE_MIGRATIONS = {
     'UG Grade Sisal Fiber': 'images/sisal%20fiber.webp',
     'Sisal Yarn': 'images/sisal%20yarn.webp',
@@ -64,6 +66,7 @@ const CATEGORY_LABELS = {
 // Main initialization function
 function initializeWebsite() {
     initCatalogSync();
+    initTawkToLiveChat();
     hideLoadingScreen();
     initNavigation();
     initThemeToggle();
@@ -83,6 +86,34 @@ function initializeWebsite() {
         requestIdleCallback(runDeferredEnhancements, { timeout: 1200 });
     } else {
         setTimeout(runDeferredEnhancements, 200);
+    }
+}
+
+function initTawkToLiveChat() {
+    const propertyId = String(TAWK_PROPERTY_ID || '').trim();
+    const widgetId = String(TAWK_WIDGET_ID || 'default').trim() || 'default';
+
+    if (!propertyId) return;
+
+    const loadTawkScript = () => {
+        if (document.getElementById('tawkto-script')) return;
+
+        window.Tawk_API = window.Tawk_API || {};
+        window.Tawk_LoadStart = new Date();
+
+        const script = document.createElement('script');
+        script.id = 'tawkto-script';
+        script.async = true;
+        script.src = `https://embed.tawk.to/${encodeURIComponent(propertyId)}/${encodeURIComponent(widgetId)}`;
+        script.charset = 'UTF-8';
+        script.setAttribute('crossorigin', '*');
+        document.head.appendChild(script);
+    };
+
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadTawkScript, { timeout: 2000 });
+    } else {
+        setTimeout(loadTawkScript, 600);
     }
 }
 
