@@ -21,6 +21,25 @@ const DESCRIPTION_SUFFIX_BY_CATEGORY = {
     oils: ' Processed to consistent quality standards and packaged for dependable wholesale and export distribution.',
     other: ' Prepared with consistent quality control and reliable documentation for wholesale and export orders.'
 };
+const PRODUCT_USE_CASE_BY_CATEGORY = {
+    sisal: ['rope manufacturing', 'twine production', 'industrial fiber applications'],
+    coffee: ['retail roasting programs', 'bulk export contracts', 'specialty and commercial blends'],
+    grains: ['food processing lines', 'wholesale distribution', 'institutional supply contracts'],
+    fruits: ['fresh produce retail', 'food service supply', 'processing and export channels'],
+    nuts: ['snack processing', 'bakery production', 'bulk ingredient supply'],
+    spices: ['seasoning blends', 'food manufacturing', 'hospitality and catering use'],
+    vegetables: ['fresh market distribution', 'hospitality kitchens', 'institutional procurement'],
+    oils: ['cooking oil distribution', 'food manufacturing', 'private label packing'],
+    other: ['wholesale procurement', 'processing lines', 'export supply chains']
+};
+const PRODUCT_QUALITY_TRAITS = [
+    'consistent grading',
+    'reliable lot quality',
+    'careful post-harvest handling',
+    'traceable sourcing',
+    'export-ready preparation',
+    'stable supply planning'
+];
 const PRODUCT_IMAGE_MIGRATIONS = {
     'UG Grade Sisal Fiber': 'images/sisal%20fiber.webp',
     'Sisal Yarn': 'images/sisal%20yarn.webp',
@@ -211,22 +230,53 @@ function applyImageFallback(imgElement, preferredSrc) {
     }
 }
 
+function deterministicChoice(seed, options) {
+    const source = String(seed || 'product');
+    if (!Array.isArray(options) || options.length === 0) return '';
+    let hash = 0;
+    for (let index = 0; index < source.length; index += 1) {
+        hash = ((hash << 5) - hash) + source.charCodeAt(index);
+        hash |= 0;
+    }
+    const normalized = Math.abs(hash);
+    return options[normalized % options.length];
+}
+
+function buildUniqueDescriptionAddon(name, category) {
+    const normalizedCategory = normalizeCategory(category);
+    const trait = deterministicChoice(`${name}-trait`, PRODUCT_QUALITY_TRAITS) || 'reliable quality';
+    const useCase = deterministicChoice(
+        `${name}-use`,
+        PRODUCT_USE_CASE_BY_CATEGORY[normalizedCategory] || PRODUCT_USE_CASE_BY_CATEGORY.other
+    ) || 'bulk procurement';
+
+    return ` Features ${trait} and is best suited for ${useCase}.`;
+}
+
 function expandProductDescription(name, description, category) {
     const normalizedCategory = normalizeCategory(category);
     const suffix = DESCRIPTION_SUFFIX_BY_CATEGORY[normalizedCategory] || DESCRIPTION_SUFFIX_BY_CATEGORY.other;
-    const base = String(description || '').trim();
-    const exportPhrase = 'ideal for';
+    const exportPhrase = 'best suited for';
+    const productName = String(name || 'Product').trim() || 'Product';
+    let base = String(description || '').trim();
+
+    Object.values(DESCRIPTION_SUFFIX_BY_CATEGORY).forEach((legacySuffix) => {
+        if (base.endsWith(legacySuffix)) {
+            base = base.slice(0, -legacySuffix.length).trim();
+        }
+    });
 
     if (!base) {
-        return `${String(name || 'Product').trim()} offers reliable quality and traceable sourcing for professional buyers.${suffix}`;
+        base = `${productName} offers reliable quality and consistent sourcing for professional buyers`;
     }
 
-    if (base.toLowerCase().includes(exportPhrase) || base.length >= 140) {
+    if (base.toLowerCase().includes(exportPhrase) && base.length >= 160) {
         return base;
     }
 
     const baseWithPeriod = /[.!?]$/.test(base) ? base : `${base}.`;
-    return `${baseWithPeriod}${suffix}`;
+    const uniqueAddon = buildUniqueDescriptionAddon(productName, normalizedCategory);
+    return `${baseWithPeriod}${uniqueAddon}${suffix}`;
 }
 
 function extractCatalogFromProductsDOM() {
