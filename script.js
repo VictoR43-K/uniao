@@ -40,6 +40,26 @@ const PRODUCT_QUALITY_TRAITS = [
     'export-ready preparation',
     'stable supply planning'
 ];
+const PRODUCT_HANDCRAFTED_DESCRIPTIONS = {
+    'UG Grade Sisal Fiber': 'Top-grade UG sisal fiber with strong, uniform strands and excellent durability. Ideal for premium rope, twine, and industrial packaging applications where consistency matters.',
+    'SSUG Grade Sisal Fiber': 'Premium SSUG sisal fiber selected for cleaner texture, high strength, and superior finishing. Preferred by buyers requiring refined export-grade natural fiber performance.',
+    'Sisal Yarn': 'Natural sisal yarn spun for dependable tensile performance and smooth handling. Suitable for weaving, baling, craft manufacturing, and commercial twine production.',
+    'Arabica Coffee': 'High-quality Arabica beans with balanced acidity, clean cup profile, and rich aroma. Prepared for specialty roasters, café chains, and premium export buyers.',
+    'Robusta Coffee': 'Strong-bodied Robusta coffee with bold flavor and reliable caffeine content. Excellent for blends, instant coffee production, and large-scale commercial roasting.',
+    'Kenya Tea': 'Premium Kenyan black tea known for bright liquor, brisk character, and consistent leaf quality. Suitable for packers, blenders, and international tea distributors.',
+    'Rice': 'Carefully milled rice with clean grains, low impurities, and dependable cooking performance. Ideal for wholesalers, retailers, and institutional food supply programs.',
+    'Wheat': 'Food-grade wheat selected for uniform kernel size and stable processing quality. Well-suited for flour mills, bakery production, and long-term bulk procurement.',
+    'Maize': 'Premium maize grain with consistent grading and reliable moisture standards. Suitable for food processing, milling operations, and large wholesale distribution.',
+    'Barley': 'Quality barley grain with strong consistency for feed, malt, and food use. Prepared for dependable supply to processors and export-oriented buyers.',
+    'Sorghum': 'Clean sorghum grain with good uniformity and reliable nutritional value. Appropriate for food products, feed programs, and regional export contracts.',
+    'Millet': 'Nutritious millet grain with carefully sorted lots and stable market quality. Suitable for healthy food brands, processors, and bulk distribution channels.',
+    'Oats': 'Wholesome oats with consistent grain quality for flakes, cereals, and food manufacturing. Ideal for retail packaging, ingredient supply, and export trade.',
+    'Rye': 'Premium rye grain prepared for reliable milling and processing outcomes. Best for flour blending, bakery use, and specialty grain procurement.',
+    'Quinoa': 'High-quality quinoa with clean grading and export-ready handling standards. Suitable for health-focused brands, food processors, and wholesale importers.',
+    'Lentil': 'Carefully sorted lentils with uniform size and dependable cooking quality. Ideal for packaged food suppliers, distributors, and institutional buyers.',
+    'Chickpea': 'Quality chickpeas selected for consistency, appearance, and processing performance. Well-suited for canning, flour production, and wholesale distribution.',
+    'Pea': 'Clean dried peas prepared to stable quality standards for food and ingredient supply. Suitable for processors, packers, and large-scale procurement programs.'
+};
 const PRODUCT_IMAGE_MIGRATIONS = {
     'UG Grade Sisal Fiber': 'images/sisal%20fiber.webp',
     'Sisal Yarn': 'images/sisal%20yarn.webp',
@@ -258,6 +278,12 @@ function expandProductDescription(name, description, category) {
     const suffix = DESCRIPTION_SUFFIX_BY_CATEGORY[normalizedCategory] || DESCRIPTION_SUFFIX_BY_CATEGORY.other;
     const exportPhrase = 'best suited for';
     const productName = String(name || 'Product').trim() || 'Product';
+    const handcrafted = PRODUCT_HANDCRAFTED_DESCRIPTIONS[productName];
+
+    if (handcrafted) {
+        return handcrafted;
+    }
+
     let base = String(description || '').trim();
 
     Object.values(DESCRIPTION_SUFFIX_BY_CATEGORY).forEach((legacySuffix) => {
