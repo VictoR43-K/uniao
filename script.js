@@ -10,6 +10,17 @@ document.addEventListener('DOMContentLoaded', function() {
 const CATALOG_STORAGE_KEY = 'uniaoProductCatalogV1';
 const TAWK_PROPERTY_ID = '69b281889dd4d71c370f2a92';
 const TAWK_WIDGET_ID = 'default';
+const DESCRIPTION_SUFFIX_BY_CATEGORY = {
+    sisal: ' Carefully processed for high tensile strength and consistency, ideal for ropes, twines, and industrial export supply.',
+    coffee: ' Carefully sourced and graded to maintain aroma, flavor consistency, and reliable bulk export quality.',
+    grains: ' Cleaned and sorted for dependable food-grade quality, suitable for wholesale buyers and international shipment.',
+    fruits: ' Selected for freshness and export readiness, with careful handling to preserve taste and shelf life in transit.',
+    nuts: ' Sorted and quality-checked for size and taste consistency, ideal for wholesale packing and food processing.',
+    spices: ' Clean and aromatic batches prepared for culinary and processing use, with stable quality for bulk procurement.',
+    vegetables: ' Freshly sourced with strict quality checks, suitable for local distribution and large-volume supply contracts.',
+    oils: ' Processed to consistent quality standards and packaged for dependable wholesale and export distribution.',
+    other: ' Prepared with consistent quality control and reliable documentation for wholesale and export orders.'
+};
 const PRODUCT_IMAGE_MIGRATIONS = {
     'UG Grade Sisal Fiber': 'images/sisal%20fiber.webp',
     'Sisal Yarn': 'images/sisal%20yarn.webp',
@@ -200,6 +211,24 @@ function applyImageFallback(imgElement, preferredSrc) {
     }
 }
 
+function expandProductDescription(name, description, category) {
+    const normalizedCategory = normalizeCategory(category);
+    const suffix = DESCRIPTION_SUFFIX_BY_CATEGORY[normalizedCategory] || DESCRIPTION_SUFFIX_BY_CATEGORY.other;
+    const base = String(description || '').trim();
+    const exportPhrase = 'ideal for';
+
+    if (!base) {
+        return `${String(name || 'Product').trim()} offers reliable quality and traceable sourcing for professional buyers.${suffix}`;
+    }
+
+    if (base.toLowerCase().includes(exportPhrase) || base.length >= 140) {
+        return base;
+    }
+
+    const baseWithPeriod = /[.!?]$/.test(base) ? base : `${base}.`;
+    return `${baseWithPeriod}${suffix}`;
+}
+
 function extractCatalogFromProductsDOM() {
     const cards = document.querySelectorAll('.product-card');
     if (cards.length === 0) return [];
@@ -216,7 +245,7 @@ function extractCatalogFromProductsDOM() {
         catalog.push({
             id: `prod-${index + 1}`,
             name: title,
-            description,
+            description: expandProductDescription(title, description, category),
             image,
             imageAlt: alt,
             category,
@@ -243,23 +272,39 @@ function setStoredCatalog(catalog) {
     localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify(catalog));
 }
 
-function migrateCatalogImagePaths(catalog) {
+function migrateCatalogData(catalog) {
     if (!Array.isArray(catalog) || catalog.length === 0) {
         return { catalog, changed: false };
     }
 
     let changed = false;
     const updatedCatalog = catalog.map(product => {
+        let nextProduct = product;
+
         const localImagePath = PRODUCT_IMAGE_MIGRATIONS[product?.name];
         if (localImagePath && product?.image !== localImagePath) {
             changed = true;
-            return {
-                ...product,
+            nextProduct = {
+                ...nextProduct,
                 image: localImagePath
             };
         }
 
-        return product;
+        const expandedDescription = expandProductDescription(
+            nextProduct?.name,
+            nextProduct?.description,
+            nextProduct?.category
+        );
+
+        if (expandedDescription !== (nextProduct?.description || '')) {
+            changed = true;
+            nextProduct = {
+                ...nextProduct,
+                description: expandedDescription
+            };
+        }
+
+        return nextProduct;
     });
 
     return { catalog: updatedCatalog, changed };
@@ -271,7 +316,9 @@ function renderProductsGridFromCatalog(catalog) {
 
     const cardsMarkup = catalog.map(product => {
         const safeName = escapeHTML(product.name);
-        const safeDescription = escapeHTML(product.description || '');
+        const safeDescription = escapeHTML(
+            expandProductDescription(product.name, product.description, product.category)
+        );
         const safeImage = escapeAttribute(product.image || '');
         const safeAlt = escapeAttribute(product.imageAlt || product.name || 'Product image');
         const safeCategory = escapeAttribute(normalizeCategory(product.category));
@@ -325,8 +372,12 @@ function applyCatalogToExistingProductsDOM(catalog) {
         }
 
         const descriptionElement = card.querySelector('.product-description');
-        if (descriptionElement && product.description) {
-            descriptionElement.textContent = product.description;
+        if (descriptionElement) {
+            descriptionElement.textContent = expandProductDescription(
+                product.name,
+                product.description,
+                product.category
+            );
         }
 
         let priceElement = card.querySelector('.product-price');
@@ -402,7 +453,7 @@ function initCatalogSync() {
 
     if (!catalog || catalog.length === 0) return;
 
-    const migrationResult = migrateCatalogImagePaths(catalog);
+    const migrationResult = migrateCatalogData(catalog);
     catalog = migrationResult.catalog;
     if (migrationResult.changed) {
         setStoredCatalog(catalog);
