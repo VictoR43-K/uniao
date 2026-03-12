@@ -100,6 +100,15 @@ function initTawkToLiveChat() {
 
         window.Tawk_API = window.Tawk_API || {};
         window.Tawk_LoadStart = new Date();
+        window.Tawk_API.onLoad = function() {
+            if (typeof window.Tawk_API.addEvent === 'function') {
+                window.Tawk_API.addEvent('site_visit', {
+                    page: window.location.pathname,
+                    title: document.title,
+                    referrer: document.referrer || 'direct'
+                });
+            }
+        };
 
         const script = document.createElement('script');
         script.id = 'tawkto-script';
