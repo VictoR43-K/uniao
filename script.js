@@ -8,8 +8,18 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const CATALOG_STORAGE_KEY = 'uniaoProductCatalogV1';
-const SISAL_FIBER_PRODUCT_NAME = 'UG Grade Sisal Fiber';
-const SISAL_FIBER_LOCAL_IMAGE = 'images/sisal%20fiber.jpeg';
+const PRODUCT_IMAGE_MIGRATIONS = {
+    'UG Grade Sisal Fiber': 'images/sisal%20fiber.jpeg',
+    'Sisal Yarn': 'images/sisal%20yarn.jpeg',
+    'Arabica Coffee': 'images/Arabica%20coffee.jpeg',
+    'Robusta Coffee': 'images/Robusta%20coffee.jpeg',
+    'Rice': 'images/Rice.jpeg',
+    'Wheat': 'images/Wheat.jpeg',
+    'Maize': 'images/maize.jpeg',
+    'Barley': 'images/Barley.jpeg',
+    'Millet': 'images/millet.jpeg',
+    'Oats': 'images/oats.jpeg'
+};
 const CATEGORY_LABELS = {
     all: 'All Products',
     sisal: 'Sisal Fiber Products',
@@ -128,11 +138,12 @@ function migrateCatalogImagePaths(catalog) {
 
     let changed = false;
     const updatedCatalog = catalog.map(product => {
-        if (product?.name === SISAL_FIBER_PRODUCT_NAME && product?.image !== SISAL_FIBER_LOCAL_IMAGE) {
+        const localImagePath = PRODUCT_IMAGE_MIGRATIONS[product?.name];
+        if (localImagePath && product?.image !== localImagePath) {
             changed = true;
             return {
                 ...product,
-                image: SISAL_FIBER_LOCAL_IMAGE
+                image: localImagePath
             };
         }
 
