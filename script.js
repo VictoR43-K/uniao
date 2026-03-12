@@ -100,6 +100,20 @@ function initTawkToLiveChat() {
 
         window.Tawk_API = window.Tawk_API || {};
         window.Tawk_LoadStart = new Date();
+        window.Tawk_API.customStyle = {
+            visibility: {
+                desktop: {
+                    position: 'bl',
+                    xOffset: 24,
+                    yOffset: 112
+                },
+                mobile: {
+                    position: 'bl',
+                    xOffset: 20,
+                    yOffset: 102
+                }
+            }
+        };
         window.Tawk_API.onLoad = function() {
             if (typeof window.Tawk_API.addEvent === 'function') {
                 window.Tawk_API.addEvent('site_visit', {
