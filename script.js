@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const CATALOG_STORAGE_KEY = 'uniaoProductCatalogV1';
+const SISAL_FIBER_PRODUCT_NAME = 'UG Grade Sisal Fiber';
+const SISAL_FIBER_LOCAL_IMAGE = 'images/sisal%20fiber.jpeg';
 const CATEGORY_LABELS = {
     all: 'All Products',
     sisal: 'Sisal Fiber Products',
@@ -119,6 +121,27 @@ function setStoredCatalog(catalog) {
     localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify(catalog));
 }
 
+function migrateCatalogImagePaths(catalog) {
+    if (!Array.isArray(catalog) || catalog.length === 0) {
+        return { catalog, changed: false };
+    }
+
+    let changed = false;
+    const updatedCatalog = catalog.map(product => {
+        if (product?.name === SISAL_FIBER_PRODUCT_NAME && product?.image !== SISAL_FIBER_LOCAL_IMAGE) {
+            changed = true;
+            return {
+                ...product,
+                image: SISAL_FIBER_LOCAL_IMAGE
+            };
+        }
+
+        return product;
+    });
+
+    return { catalog: updatedCatalog, changed };
+}
+
 function renderProductsGridFromCatalog(catalog) {
     const productsGrid = document.getElementById('productsGrid');
     if (!productsGrid || !Array.isArray(catalog) || catalog.length === 0) return;
@@ -190,6 +213,12 @@ function initCatalogSync() {
     }
 
     if (!catalog || catalog.length === 0) return;
+
+    const migrationResult = migrateCatalogImagePaths(catalog);
+    catalog = migrationResult.catalog;
+    if (migrationResult.changed) {
+        setStoredCatalog(catalog);
+    }
 
     if (hasProductsGrid) {
         renderProductsGridFromCatalog(catalog);
