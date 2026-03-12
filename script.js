@@ -9,44 +9,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
 const CATALOG_STORAGE_KEY = 'uniaoProductCatalogV1';
 const PRODUCT_IMAGE_MIGRATIONS = {
-    'UG Grade Sisal Fiber': 'images/sisal%20fiber.jpeg',
-    'Sisal Yarn': 'images/sisal%20yarn.jpeg',
-    'Apple': 'images/apple.jpeg',
-    'Arabica Coffee': 'images/Arabica%20coffee.jpeg',
-    'Avocado': 'images/avocado.jpeg',
-    'Banana': 'images/banana.jpeg',
-    'Robusta Coffee': 'images/Robusta%20coffee.jpeg',
-    'Blackberry': 'images/blackberry.jpeg',
-    'Blueberry': 'images/blueberry.jpeg',
-    'Rice': 'images/Rice.jpeg',
-    'Wheat': 'images/Wheat.jpeg',
-    'Maize': 'images/maize.jpeg',
-    'Barley': 'images/Barley.jpeg',
-    'Cherry': 'images/cherry.jpeg',
-    'Chickpea': 'images/chickpea.jpeg',
-    'Coconut': 'images/coconut.jpeg',
-    'Date': 'images/date.jpeg',
-    'Grapefruit': 'images/grapefruit.jpeg',
-    'Guava': 'images/guava.jpeg',
-    'Lemon': 'images/lemon.jpeg',
-    'Lentil': 'images/lentil.jpeg',
-    'Lime': 'images/lime.jpeg',
-    'Mango': 'images/mango.jpeg',
-    'Millet': 'images/millet.jpeg',
-    'Oats': 'images/oats.jpeg',
-    'Orange': 'images/orange.jpeg',
-    'Papaya': 'images/papaya.jpeg',
-    'Pea': 'images/pea.jpeg',
-    'Peach': 'images/peach.jpeg',
-    'Pear': 'images/pear.jpeg',
-    'Pineapple': 'images/pineapple.jpeg',
-    'Plum': 'images/plum.jpeg',
-    'Quinoa': 'images/quinoa.jpeg',
-    'Raisin': 'images/raisin.jpeg',
-    'Rye': 'images/rye.jpeg',
-    'Sorghum': 'images/sorghum.jpeg',
-    'Strawberry': 'images/strawberry.jpeg',
-    'Tangerine': 'images/tangerine.jpeg'
+    'UG Grade Sisal Fiber': 'images/sisal%20fiber.webp',
+    'Sisal Yarn': 'images/sisal%20yarn.webp',
+    'Apple': 'images/apple.webp',
+    'Arabica Coffee': 'images/Arabica%20coffee.webp',
+    'Avocado': 'images/avocado.webp',
+    'Banana': 'images/banana.webp',
+    'Robusta Coffee': 'images/Robusta%20coffee.webp',
+    'Blackberry': 'images/blackberry.webp',
+    'Blueberry': 'images/blueberry.webp',
+    'Rice': 'images/Rice.webp',
+    'Wheat': 'images/Wheat.webp',
+    'Maize': 'images/maize.webp',
+    'Barley': 'images/Barley.webp',
+    'Cherry': 'images/cherry.webp',
+    'Chickpea': 'images/chickpea.webp',
+    'Coconut': 'images/coconut.webp',
+    'Date': 'images/date.webp',
+    'Grapefruit': 'images/grapefruit.webp',
+    'Guava': 'images/guava.webp',
+    'Lemon': 'images/lemon.webp',
+    'Lentil': 'images/lentil.webp',
+    'Lime': 'images/lime.webp',
+    'Mango': 'images/mango.webp',
+    'Millet': 'images/millet.webp',
+    'Oats': 'images/oats.webp',
+    'Orange': 'images/orange.webp',
+    'Papaya': 'images/papaya.webp',
+    'Pea': 'images/pea.webp',
+    'Peach': 'images/peach.webp',
+    'Pear': 'images/pear.webp',
+    'Pineapple': 'images/pineapple.webp',
+    'Plum': 'images/plum.webp',
+    'Quinoa': 'images/quinoa.webp',
+    'Raisin': 'images/raisin.webp',
+    'Rye': 'images/rye.webp',
+    'Sorghum': 'images/sorghum.webp',
+    'Strawberry': 'images/strawberry.webp',
+    'Tangerine': 'images/tangerine.webp'
 };
 const CATEGORY_LABELS = {
     all: 'All Products',
@@ -123,6 +123,27 @@ function escapeHTML(text) {
 
 function escapeAttribute(text) {
     return escapeHTML(text).replace(/`/g, '&#96;');
+}
+
+function getJpegFallbackPath(imagePath) {
+    const source = String(imagePath || '');
+    if (!source) return '';
+    return source.replace(/\.webp(\?.*)?$/i, '.jpeg$1');
+}
+
+function applyImageFallback(imgElement, preferredSrc) {
+    if (!imgElement) return;
+
+    const fallbackSrc = getJpegFallbackPath(preferredSrc);
+    if (fallbackSrc && fallbackSrc !== preferredSrc) {
+        imgElement.onerror = () => {
+            if (imgElement.dataset.fallbackApplied === '1') return;
+            imgElement.dataset.fallbackApplied = '1';
+            imgElement.src = fallbackSrc;
+        };
+    } else {
+        imgElement.onerror = null;
+    }
 }
 
 function extractCatalogFromProductsDOM() {
@@ -205,7 +226,7 @@ function renderProductsGridFromCatalog(catalog) {
         const priceMarkup = safePrice ? `<p class="product-price">${safePrice}</p>` : '';
 
         return `<div class="product-card" data-category="${safeCategory}">`
-            + `<div class="product-image"><img src="${safeImage}" alt="${safeAlt}" loading="lazy"></div>`
+            + `<div class="product-image"><img src="${safeImage}" alt="${safeAlt}" loading="lazy" decoding="async"></div>`
             + `<div class="product-info">`
             + `<h3 class="product-title">${safeName}</h3>`
             + `<p class="product-description">${safeDescription}</p>`
@@ -215,6 +236,9 @@ function renderProductsGridFromCatalog(catalog) {
     }).join('');
 
     productsGrid.innerHTML = cardsMarkup;
+    productsGrid.querySelectorAll('img').forEach((img) => {
+        applyImageFallback(img, img.getAttribute('src') || '');
+    });
 }
 
 function applyCatalogToExistingProductsDOM(catalog) {
@@ -243,6 +267,7 @@ function applyCatalogToExistingProductsDOM(catalog) {
             imageElement.alt = product.imageAlt || product.name || imageElement.alt;
             imageElement.loading = 'lazy';
             imageElement.decoding = 'async';
+            applyImageFallback(imageElement, imageElement.src);
         }
 
         const descriptionElement = card.querySelector('.product-description');
