@@ -72,9 +72,18 @@ function initializeWebsite() {
     initCounterAnimation();
     initFormHandling();
     prefillQuoteFromQuery();
-    initParticles();
-    initTestimonials();
-    initScrollAnimations();
+
+    const runDeferredEnhancements = () => {
+        initParticles();
+        initTestimonials();
+        initScrollAnimations();
+    };
+
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(runDeferredEnhancements, { timeout: 1200 });
+    } else {
+        setTimeout(runDeferredEnhancements, 200);
+    }
 }
 
 function normalizeCategory(value) {
@@ -208,6 +217,67 @@ function renderProductsGridFromCatalog(catalog) {
     productsGrid.innerHTML = cardsMarkup;
 }
 
+function applyCatalogToExistingProductsDOM(catalog) {
+    const productsGrid = document.getElementById('productsGrid');
+    if (!productsGrid || !Array.isArray(catalog) || catalog.length === 0) return false;
+
+    const cards = productsGrid.querySelectorAll('.product-card');
+    if (cards.length === 0) return false;
+
+    const productByName = new Map(catalog.map(product => [String(product.name || '').trim(), product]));
+
+    cards.forEach(card => {
+        const titleElement = card.querySelector('.product-title');
+        if (!titleElement) return;
+
+        const productName = String(titleElement.textContent || '').trim();
+        const product = productByName.get(productName);
+        if (!product) return;
+
+        const normalizedCategory = normalizeCategory(product.category);
+        card.setAttribute('data-category', normalizedCategory);
+
+        const imageElement = card.querySelector('img');
+        if (imageElement) {
+            imageElement.src = product.image || imageElement.src;
+            imageElement.alt = product.imageAlt || product.name || imageElement.alt;
+            imageElement.loading = 'lazy';
+            imageElement.decoding = 'async';
+        }
+
+        const descriptionElement = card.querySelector('.product-description');
+        if (descriptionElement && product.description) {
+            descriptionElement.textContent = product.description;
+        }
+
+        let priceElement = card.querySelector('.product-price');
+        const hasPrice = Boolean(product.price && String(product.price).trim());
+        if (hasPrice) {
+            if (!priceElement) {
+                priceElement = document.createElement('p');
+                priceElement.className = 'product-price';
+                const infoContainer = card.querySelector('.product-info');
+                const quoteButton = infoContainer?.querySelector('.btn');
+                if (infoContainer) {
+                    if (quoteButton) {
+                        infoContainer.insertBefore(priceElement, quoteButton);
+                    } else {
+                        infoContainer.appendChild(priceElement);
+                    }
+                }
+            }
+
+            if (priceElement) {
+                priceElement.textContent = product.price;
+            }
+        } else if (priceElement) {
+            priceElement.remove();
+        }
+    });
+
+    return true;
+}
+
 function syncQuoteOptionsFromCatalog(catalog) {
     const productSelect = document.getElementById('product');
     if (!productSelect || !Array.isArray(catalog) || catalog.length === 0) return;
@@ -260,7 +330,10 @@ function initCatalogSync() {
     }
 
     if (hasProductsGrid) {
-        renderProductsGridFromCatalog(catalog);
+        const updatedInPlace = applyCatalogToExistingProductsDOM(catalog);
+        if (!updatedInPlace) {
+            renderProductsGridFromCatalog(catalog);
+        }
     }
 
     if (hasQuoteSelect) {
@@ -845,7 +918,6 @@ function initScrollAnimations() {
 
     // Observe elements
     const animatedElements = document.querySelectorAll(`
-        .product-card,
         .why-us-card,
         .mvv-card,
         .contact-card,
